@@ -1,0 +1,2 @@
+Dynamic variable definition depending on facts:
+extra_var: "{{'This is value 1' if ansible_fqdn == 'server.one.example' else 'This is value 2'}}"
