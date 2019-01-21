@@ -1,2 +1,16 @@
 Dynamic variable definition depending on facts:
 extra_var: "{{'This is value 1' if ansible_fqdn == 'server.one.example' else 'This is value 2'}}"
+--------------------------------------
+Using loop with the contents of a file:
+
+tasks:
+  - name: Populate public key
+    authorized_key:
+      user: tomasz
+      state: present
+      key: "{{ item }}"
+    with_file: #this loop over contents of each file, in this case the SSH key
+      - /home/tomasz/.ssh/id_rsa.pub
+--------------------------------------
+One way to enable user to use sudo to become root without a password is to install a file with the approproate directives into /etc/sudoers.d with 0400 permissions:
+someuser ALL=(ALL) NOPASSWD:ALL
