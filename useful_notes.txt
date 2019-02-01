@@ -17,3 +17,32 @@ someuser ALL=(ALL) NOPASSWD:ALL
 --------------------------------------
 Access hostvars:
 ansible Centos1 -m debug -a 'var=hostvars[inventory_hostname].ansible_version.full'
+--------------------------------------
+hostvars has different content depending if it comes from gathered facts (via playbook) or from an ad_hoc command (when facts were not gathered?):
+
+---
+- name: test variables
+  hosts: all
+
+  tasks:
+    - name: Test group vars
+      debug:
+        msg:  "The value of the var is {{ ansible_version.full }} and {{inventory_dir}}"
+
+    - name: Test host vars
+      debug:
+        msg: "This is {{ ansible_date_time.epoch }}"
+
+This can be easily observed when comparing the out of this:
+
+ansible all -m debug -a 'var=hostvars'
+
+and this:
+
+---
+- name: test variables
+  hosts: all
+
+    - name: Test host vars
+      debug:
+        msg: "This is {{ hostvars }}"
