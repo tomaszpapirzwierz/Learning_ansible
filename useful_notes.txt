@@ -14,3 +14,6 @@ tasks:
 --------------------------------------
 One way to enable user to use sudo to become root without a password is to install a file with the approproate directives into /etc/sudoers.d with 0400 permissions:
 someuser ALL=(ALL) NOPASSWD:ALL
+--------------------------------------
+Access hostvars:
+ansible Centos1 -m debug -a 'var=hostvars[inventory_hostname].ansible_version.full'
