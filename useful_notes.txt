@@ -33,7 +33,7 @@ hostvars has different content depending if it comes from gathered facts (via pl
       debug:
         msg: "This is {{ ansible_date_time.epoch }}"
 
-This can be easily observed when comparing the out of this:
+This can be easily observed when comparing the output of this:
 
 ansible all -m debug -a 'var=hostvars'
 
@@ -46,3 +46,13 @@ and this:
     - name: Test host vars
       debug:
         msg: "This is {{ hostvars }}"
+-----------------------------
+Also (verify)
+
+---
+- name: test variables
+  hosts: all
+
+    - name: Test host vars
+      debug:
+        var: hostvars.Centos1.ansible_enp0s8.active
