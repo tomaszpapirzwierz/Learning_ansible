@@ -1,5 +1,6 @@
 Dynamic variable definition depending on facts:
 extra_var: "{{'This is value 1' if ansible_fqdn == 'server.one.example' else 'This is value 2'}}"
+
 --------------------------------------
 Using loop with the contents of a file:
 
@@ -11,48 +12,39 @@ tasks:
       key: "{{ item }}"
     with_file: #this loop over contents of each file, in this case the SSH key
       - /home/tomasz/.ssh/id_rsa.pub
+      
 --------------------------------------
 One way to enable user to use sudo to become root without a password is to install a file with the approproate directives into /etc/sudoers.d with 0400 permissions:
 someuser ALL=(ALL) NOPASSWD:ALL
+
+"Someuser" is not getting the same priviledges as root; that user BECOMES root, when using sudo <command>.
+
 --------------------------------------
 Access hostvars:
-ansible Centos1 -m debug -a 'var=hostvars[inventory_hostname].ansible_version.full'
+ansible Centos1 -m debug -a 'var=hostvars'
+
+This lists the variables pre-facts gathering, as this is an ad-hoc command and those are master node's variables.
+
 --------------------------------------
-hostvars has different content depending if it comes from gathered facts (via playbook) or from an ad_hoc command (when facts were not gathered?):
+When gather_facts = true, the hostvars in the playbook refers to the managed host(s) which was targeted via playbook
 
 ---
 - name: test variables
   hosts: all
 
   tasks:
-    - name: Test group vars
+    - name: Test host vars
       debug:
-        msg:  "The value of the var is {{ ansible_version.full }} and {{inventory_dir}}"
+        var: hostvars
+        
+Then a variable can be accessed directly, for example:
 
     - name: Test host vars
       debug:
-        msg: "This is {{ ansible_date_time.epoch }}"
-
-This can be easily observed when comparing the output of this:
-
-ansible all -m debug -a 'var=hostvars'
-
-and this:
-
----
-- name: test variables
-  hosts: all
+        var: ansible_python.version_info
+        
+Here, a variable does not need "{{ }}", as the var option calls its name directly however if we want to print a message with a variable expansion, then this is what we need:
 
     - name: Test host vars
       debug:
-        msg: "This is {{ hostvars }}"
------------------------------
-Also (verify)
-
----
-- name: test variables
-  hosts: all
-
-    - name: Test host vars
-      debug:
-        var: hostvars.Centos1.ansible_enp0s8.active
+        msg: "This is the Python version: {{ ansible_python.version_info }}"
