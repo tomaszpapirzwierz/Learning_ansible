@@ -48,6 +48,20 @@ Here, a variable does not need "{{ }}", as the var option calls its name directl
     - name: Test host vars
       debug:
         msg: "This is the Python version: {{ ansible_python.version_info }}"
+        
+                                ###***The above is true for variables returned as dicts!***###
 
----------------------------------
+For variables returned as lists, we need to access those with a list index. An example would be using ansible_mounts, where we want to see the name of the second mount in ansible_mounts:
+
+---
+- name: Play 1 - prepare the host
+  hosts: Centos1
+
+  tasks:
+    - name: see mounts
+      debug:
+        var: ansible_mounts[1].mount
+                                    
+
+--------------------------------------
 Ansible playbook keywords: https://docs.ansible.com/ansible/latest/reference_appendices/playbooks_keywords.html
