@@ -48,3 +48,6 @@ Here, a variable does not need "{{ }}", as the var option calls its name directl
     - name: Test host vars
       debug:
         msg: "This is the Python version: {{ ansible_python.version_info }}"
+
+---------------------------------
+Ansible playbook keywords: https://docs.ansible.com/ansible/latest/reference_appendices/playbooks_keywords.html
