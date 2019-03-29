@@ -65,3 +65,41 @@ For variables returned as lists, we need to access those with a list index. An e
 
 --------------------------------------
 Ansible playbook keywords: https://docs.ansible.com/ansible/latest/reference_appendices/playbooks_keywords.html
+
+--------------------------------------
+Linuxacademy tips:
+
+1. user.retry files (needs to be enabled in ansible.cfg) - it will generate anfile with list of hosts where the playbook has failed so we can rerun with "--limit .playbook.retry". Very useful for long playbooks.
+
+2. Use --limit against one host at the first playbook run to catch potential error.
+
+3. Any software installation REQUIRES become!!!
+
+--------------------------------------
+
+Ansible 2.7
+
+this won't work:
+when:
+    - result | failed
+    
+use:
+when:
+    - result is failed
+    
+Ansible facts, which have historically been written to names like ansible_* in the main facts namespace, have been placed in their own new namespace, ansible_facts.* For example, the fact ansible_distribution is now best queried through the variable structure ansible_facts.distribution.
+
+To save some typing, repeated tasks can be written in short-hand like so:
+
+- name: add several users
+  user:
+    name: "{{ item }}"
+    state: present
+    groups: "wheel"
+  loop:
+     - testuser1
+     - testuser2
+
+If you have defined a YAML list in a variables file, or the ‘vars’ section, you can also do:
+
+loop: "{{ somelist }}"
