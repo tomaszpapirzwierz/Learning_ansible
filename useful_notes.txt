@@ -105,6 +105,34 @@ If you have defined a YAML list in a variables file, or the ‘vars’ section, 
 loop: "{{ somelist }}"
 
 
+
+
+There is an important difference in the way that include_role (dynamic) will expose the role’s variables, as opposed to
+import_role (static). import_role is a pre-processor, and the defaults and vars are evaluated at playbook parsing, making the
+variables available to tasks and roles listed at any point in the play. include_role is a conditional task, and the defaults and
+vars are evaluated at execution time, making the variables available to tasks and roles listed after the include_role task.
+
 --------------------------------------
 
-There is an important difference in the way that include_role (dynamic) will expose the role’s variables, as opposed to import_role (static). import_role is a pre-processor, and the defaults and vars are evaluated at playbook parsing, making the variables available to tasks and roles listed at any point in the play. include_role is a conditional task, and the defaults and vars are evaluated at execution time, making the variables available to tasks and roles listed after the include_role task.
+Block tasks: inside, the modules are specified as list elements:
+
+---
+- name: Sample block
+  hosts: all
+  
+  tasks:
+    - name: Let's run a block
+      block:
+        - yum:
+            name: httpd
+            status: latest
+        - service:
+            name: httpd
+            state: started
+            enabled: yes
+      rescue:
+        - debug:
+            msg: "Package httpd does not exist"
+      always:
+        - debug:
+            msg: "Play complete!"
