@@ -103,3 +103,8 @@ To save some typing, repeated tasks can be written in short-hand like so:
 If you have defined a YAML list in a variables file, or the ‘vars’ section, you can also do:
 
 loop: "{{ somelist }}"
+
+
+--------------------------------------
+
+There is an important difference in the way that include_role (dynamic) will expose the role’s variables, as opposed to import_role (static). import_role is a pre-processor, and the defaults and vars are evaluated at playbook parsing, making the variables available to tasks and roles listed at any point in the play. include_role is a conditional task, and the defaults and vars are evaluated at execution time, making the variables available to tasks and roles listed after the include_role task.
